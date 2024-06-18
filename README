@@ -1,3 +1,22 @@
+
+
+got initial build.zig file from: https://github.com/pYtato-KK/xv6-riscv-zig/tree/riscv
+BUILD with ZIG 0.12.1
+need path to ZIG compiler & QEMU
+
+zig build run
+
+
+to simplify, don't use perl script to generate, check in the usys.S file instead
+had to make small changes to mkfs to work with zig build outputs to generate proper file names
+had to change the file system block size to 2048 (needs more investigation)
+had to change the linker script (user.ld) to change the alignment
+
+
+
+
+
+======================= ORIGINAL README FILE =============================================
 xv6 is a re-implementation of Dennis Ritchie's and Ken Thompson's Unix
 Version 6 (v6).  xv6 loosely follows the structure and style of v6,
 but is implemented for a modern RISC-V multiprocessor using ANSI C.
