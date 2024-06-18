@@ -5,6 +5,9 @@ _*
 *.asm
 *.sym
 *.img
+*.zig-cache
+zig-cache
+zig-out
 vectors.S
 bootblock
 entryother
@@ -13,5 +16,5 @@ initcode.out
 kernelmemfs
 mkfs
 kernel/kernel
-user/usys.S
+#user/usys.S
 .gdbinit
