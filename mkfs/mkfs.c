@@ -5,6 +5,9 @@
 #include <fcntl.h>
 #include <assert.h>
 
+#define index(s,c) strchr((s),(c))
+#define bcopy(s,d,n) memcpy((d),(s),(n))
+#define bzero(s,n) memset((s),0,(n))
 #define stat xv6_stat  // avoid clash with host struct stat
 #include "kernel/types.h"
 #include "kernel/fs.h"
