@@ -88,7 +88,11 @@ main(int argc, char *argv[])
   assert((BSIZE % sizeof(struct dinode)) == 0);
   assert((BSIZE % sizeof(struct dirent)) == 0);
 
+#ifdef O_BINARY
+  fsfd = open(argv[1], O_RDWR|O_CREAT|O_TRUNC|O_BINARY, 0666);
+#else
   fsfd = open(argv[1], O_RDWR|O_CREAT|O_TRUNC, 0666);
+#endif
   if(fsfd < 0)
     die(argv[1]);
 
@@ -131,24 +135,31 @@ main(int argc, char *argv[])
   iappend(rootino, &de, sizeof(de));
 
   for(i = 2; i < argc; i++){
-    // get rid of "user/"
-    char *shortname;
-    if(strncmp(argv[i], "user/", 5) == 0)
-      shortname = argv[i] + 5;
-    else
-      shortname = argv[i];
-    
-    assert(index(shortname, '/') == 0);
-
-    if((fd = open(argv[i], 0)) < 0)
-      die(argv[i]);
-
+    // determine the file short name
     // Skip leading _ in name when writing to file system.
     // The binaries are named _rm, _cat, etc. to keep the
     // build operating system from trying to execute them
     // in place of system binaries like rm and cat.
-    if(shortname[0] == '_')
-      shortname += 1;
+    char * fullname = argv[i];
+    char * shortname = fullname;
+
+    char* new_str = strrchr(fullname, '_');
+    if (new_str != NULL) {
+      shortname = &new_str[1];
+    } 
+    
+    printf("SHORTNAME  :%s:\n", shortname);
+
+    assert(index(shortname, '/') == 0);
+
+#ifdef O_BINARY
+    if((fd = open(fullname, O_BINARY)) < 0) {
+#else
+    if((fd = open(fullname, 0)) < 0) {
+#endif
+      fprintf(stderr, "Failed to open file: %s\n", fullname);
+      die(fullname);
+    }
 
     inum = ialloc(T_FILE);
 
@@ -156,10 +167,9 @@ main(int argc, char *argv[])
     de.inum = xshort(inum);
     strncpy(de.name, shortname, DIRSIZ);
     iappend(rootino, &de, sizeof(de));
-
-    while((cc = read(fd, buf, sizeof(buf))) > 0)
+    while((cc = read(fd, buf, sizeof(buf))) > 0) {
       iappend(inum, buf, cc);
-
+    }
     close(fd);
   }
 
@@ -299,6 +309,8 @@ iappend(uint inum, void *xp, int n)
 void
 die(const char *s)
 {
+  fprintf(stderr, "ERROR:");
   perror(s);
+  fflush(stderr);
   exit(1);
 }
