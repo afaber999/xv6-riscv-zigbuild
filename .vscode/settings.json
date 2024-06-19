@@ -1,0 +1,5 @@
+{
+    "zig.formattingProvider": "off",
+    "zig.zls.enableBuildOnSave": false,
+    "editor.formatOnSave": false,
+}
