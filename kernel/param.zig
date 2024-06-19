@@ -3,6 +3,9 @@ const c = @cImport({
     @cInclude("param.h");
 });
 
+
+// REPLACE SECTION ONCE ALL CODE HAS BEEN TRANSFERRED TO ZIG
+// FOR NOW ALIAS THE C defines in param.h (so were at least consistent)
 pub const NPROC = c.NPROC;
 pub const NCPU = c.NCPU;
 pub const NOFILE =c.NOFILE;

@@ -1,7 +1,9 @@
 
 
 got initial build.zig file from: https://github.com/pYtato-KK/xv6-riscv-zig/tree/riscv
-BUILD with ZIG 0.12.1
+got ZIG code from https://github.com/binarycraft007/xv6-riscv-zig
+
+BUILD with ZIG 0.13
 need path to ZIG compiler & QEMU
 
 zig build run

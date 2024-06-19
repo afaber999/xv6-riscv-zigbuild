@@ -6,5 +6,10 @@
 
 void timerinit();
 void kmain();
+void panic(char *s);
+void consputc(int c);
+
+// forward declartion for spinlock
+struct cpu;
 
 #endif

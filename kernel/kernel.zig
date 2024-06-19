@@ -2,6 +2,7 @@ const std = @import("std");
 const riscv = @import("riscv.zig");
 const memlayout = @import("memlayout.zig");
 const param = @import("param.zig");
+const spinlock = @import("spinlock.zig");
 
 const c = @cImport({
     @cInclude("spinlock.h");
@@ -28,6 +29,7 @@ pub export fn zig_start() void {
     } else {
         riscv.intr_on();
         riscv.intr_off();
+        //@panic("TEST PANIC!!!!!");
     }
 
     // set M Previous Privilege mode to Supervisor, for mret.
@@ -91,7 +93,7 @@ pub fn timerinit() void {
 
     // set the machine-mode trap handler.
     riscv.w_mtvec(@intFromPtr(&timervec));
-
+    
     // enable machine-mode interrupts.
     riscv.w_mstatus(riscv.r_mstatus() | @intFromEnum(riscv.MSTATUS.MIE));
 
@@ -100,10 +102,34 @@ pub fn timerinit() void {
 }
 
 
+pub fn panic(
+    msg: []const u8,
+    error_return_trace: ?*std.builtin.StackTrace,
+    _: ?usize,
+) noreturn {
+
+    _ = error_return_trace;
+
+    for (msg) |ch| {
+        c.consputc(ch);
+
+    }
+
+    //c.panic(msg);
+    // @setCold(true);
+    // const panic_log = std.log.scoped(.panic);
+    // log_root.locking = false;
+    // panic_log.err("{s}\n", .{msg});
+    // log_root.panicked = true; // freeze uart output from other CPUs
+    while (true) {}
+}
+
 export fn zig_init_lock(lk: *c.struct_spinlock, name: [*c]u8) callconv(.C) u32 {
     lk.name = name;
     lk.locked = 0;
     lk.cpu = null;
+    var sl : spinlock.SpinLock = undefined;
+    sl.init("TESTIE");
     return 1;
 }
 
