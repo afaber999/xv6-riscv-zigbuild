@@ -1,7 +1,21 @@
 const std = @import("std");
 
 const userpath = "user";
-const cflags = &[_][]const u8{ "-Wall", "-Werror", "-Wno-gnu-designator", "-Wno-unused-variable", "-Wno-unused-but-set-variable", "-O3", "-I./", "-mno-relax", "-fno-pie", "-fno-stack-protector", "-fno-common", "-fno-omit-frame-pointer", "-mcmodel=medany" };
+const cflags = &[_][]const u8{ 
+    "-Wall", 
+    "-Werror", 
+    "-Wno-gnu-designator", 
+    "-Wno-unused-variable", 
+    "-Wno-unused-but-set-variable", 
+    "-O3", 
+    "-I./", 
+    "-mno-relax", 
+    "-fno-pie", 
+    "-fno-stack-protector", 
+    "-fno-common", 
+    "-fno-omit-frame-pointer", 
+    "-mcmodel=medany" };
+
 const ulibNames = [_][]const u8{
     "ulib.c", "umalloc.c", "printf.c", "usys.S",
 };
@@ -35,14 +49,15 @@ pub fn build(b: *std.Build) !void {
         .name = "kernel",
         .target = target,
         .optimize = .ReleaseFast, // Debug doesn't work, emits illegal instructions (???)
+        .code_model = .medium,
         .strip = false,
     });
     kernel.addCSourceFiles(.{
-        .root = .{ .path = "kernel/" },
+        .root = b.path("kernel/"),
         .files = &[_][]const u8{ "entry.S", "bio.c", "console.c", "exec.c", "file.c", "fs.c", "kalloc.c", "log.c", "main.c", "pipe.c", "plic.c", "printf.c", "proc.c", "sleeplock.c", "spinlock.c", "start.c", "string.c", "syscall.c", "sysfile.c", "sysproc.c", "trap.c", "uart.c", "virtio_disk.c", "vm.c", "kernelvec.S", "swtch.S", "trampoline.S" },
         .flags = cflags,
     });
-    kernel.setLinkerScript(.{ .path = "kernel/kernel.ld" });
+    kernel.setLinkerScript(b.path("kernel/kernel.ld"));
     kernel.entry = .{ .symbol_name = "_entry" };
     kernel.link_z_max_page_size = 4096;
 
@@ -60,6 +75,7 @@ pub fn build(b: *std.Build) !void {
             .name = u[0 .. u.len - 2],
             .target = target,
             .optimize = .ReleaseFast,
+            .code_model = .medium,
         });
         const path = try std.fs.path.join(
             gpa.allocator(),
@@ -69,7 +85,7 @@ pub fn build(b: *std.Build) !void {
         );
         defer gpa.allocator().free(path);
         obj.addCSourceFile(.{
-            .file = .{ .path = path },
+            .file = b.path(path),
             .flags = cflags,
         });
         ulib[i] = obj;
@@ -109,7 +125,7 @@ pub fn build(b: *std.Build) !void {
             continue;
         }
 
-        exe.setLinkerScript(.{ .path = "user/user.ld" });
+        exe.setLinkerScript(b.path("user/user.ld"));
         exe.entry = .{ .symbol_name = "_main" };
         exe.link_z_max_page_size = 4096;
 
@@ -124,7 +140,7 @@ pub fn build(b: *std.Build) !void {
         .optimize = .ReleaseFast,
     });
     mkfs.addCSourceFile(.{
-        .file = .{ .path = "mkfs/mkfs.c" },
+        .file = b.path("mkfs/mkfs.c"),
         .flags = &[_][]const u8{
             "-Wall", "-Werror", "-I./",
         },
@@ -140,8 +156,12 @@ pub fn build(b: *std.Build) !void {
     b.getInstallStep().dependOn(&b.addInstallFile(img, "fs.img").step);
 
     const qemu = b.addSystemCommand(&[_][]const u8{
-        "qemu-system-riscv64", "-machine", "virt",       "-bios",   "none",                           "-m",      "128M",
-        "-smp",                "3",        "-nographic", "-global", "virtio-mmio.force-legacy=false", "-device", "virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0",
+        "qemu-system-riscv64", "-machine", "virt","-bios","none",
+        "-m","128M",
+        "-smp","3",
+        "-nographic", 
+        "-global", "virtio-mmio.force-legacy=false", 
+        "-device", "virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0",
     });
     qemu.addArg("-kernel");
     qemu.addFileArg(kernel.getEmittedBin());
@@ -157,10 +177,11 @@ fn createCUserProg(b: *std.Build, source: []const u8, name: []const u8) *std.Bui
         .name = name,
         .target = getTarget(b),
         .optimize = .ReleaseFast,
+        .code_model = .medium,
     });
     const path = b.pathJoin(&[_][]const u8{ userpath, source });
     exe.addCSourceFile(.{
-        .file = .{ .path = path },
+        .file = b.path(path),
         .flags = cflags,
     });
     for (ulib) |o| {
@@ -174,9 +195,10 @@ fn createZigUserProg(b: *std.Build, source: []const u8, name: []const u8) *std.B
         .name = name,
         .target = getTarget(b),
         .optimize = .ReleaseSafe,
-        .root_source_file = .{ .path = b.pathJoin(&[_][]const u8{ userpath, source }) },
+        .code_model = .medium,
+        .root_source_file = b.path(b.pathJoin(&[_][]const u8{ userpath, source })),
     });
-    exe.addIncludePath(.{ .path = "./" });
+    exe.addIncludePath(b.path("./"));
     exe.addObject(usys.*);
     return exe;
 }
