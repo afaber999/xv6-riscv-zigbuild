@@ -129,6 +129,12 @@ usertrapret(void)
   ((void (*)(uint64))trampoline_userret)(satp);
 }
 
+
+
+//  AF TEMP
+void zig_uartintr();
+//
+
 // interrupts and exceptions from kernel code go here via kernelvec,
 // on whatever the current kernel stack is.
 void 
@@ -187,7 +193,7 @@ devintr()
     int irq = plic_claim();
 
     if(irq == UART0_IRQ){
-      uartintr();
+      zig_uartintr();
     } else if(irq == VIRTIO0_IRQ){
       virtio_disk_intr();
     } else if(irq){

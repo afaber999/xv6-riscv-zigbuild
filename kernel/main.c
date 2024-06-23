@@ -6,6 +6,10 @@
 
 volatile static int started = 0;
 
+
+// AF TEMP
+extern void zig_procinit(void);
+
 // start() jumps here in supervisor mode on all CPUs.
 void
 kmain()
@@ -19,7 +23,7 @@ kmain()
     kinit();         // physical page allocator
     kvminit();       // create kernel page table
     kvminithart();   // turn on paging
-    procinit();      // process table
+    zig_procinit();      // process table
     trapinit();      // trap vectors
     trapinithart();  // install kernel trap vector
     plicinit();      // set up interrupt controller

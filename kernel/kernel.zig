@@ -3,6 +3,8 @@ const riscv = @import("riscv.zig");
 const memlayout = @import("memlayout.zig");
 const param = @import("param.zig");
 const spinlock = @import("spinlock.zig");
+const uart = @import("uart.zig");
+const proc = @import("proc.zig");
 
 const c = @cImport({
     @cInclude("spinlock.h");
@@ -133,3 +135,22 @@ export fn zig_init_lock(lk: *c.struct_spinlock, name: [*c]u8) callconv(.C) u32 {
     return 1;
 }
 
+
+pub export fn zig_uartintr() callconv(.C) void {
+    c.uartintr();
+}    
+
+pub export fn zig_uartinit() callconv(.C) void {
+    uart.init();
+    //c.uartinit();
+} 
+
+pub export fn zig_procinit() callconv(.C) void {
+    proc.init();
+    //c.uartinit();
+} 
+
+pub export fn zig_allocpid() callconv(.C)  c_int {
+    return proc.allocpid();
+    //c.uartinit();
+} 

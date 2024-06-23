@@ -187,8 +187,12 @@ pub fn build(b: *std.Build) !void {
     b.getInstallStep().dependOn(&b.addInstallFile(img, "fs.img").step);
 
     const qemu = b.addSystemCommand(&[_][]const u8{
-        "qemu-system-riscv64", "-machine", "virt",       "-bios",   "none",                           "-m",      "128M",
-        "-smp",                "3",        "-nographic", "-global", "virtio-mmio.force-legacy=false", "-device", "virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0",
+        "qemu-system-riscv64", "-machine", "virt","-bios","none",
+        "-m","128M",
+        "-smp","3",
+        "-nographic", 
+        "-global", "virtio-mmio.force-legacy=false", 
+        "-device", "virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0",
     });
     qemu.addArg("-kernel");
     qemu.addFileArg(kernel.getEmittedBin());

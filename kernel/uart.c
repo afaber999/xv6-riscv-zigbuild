@@ -49,33 +49,33 @@ extern volatile int panicked; // from printf.c
 
 void uartstart();
 
-void
-uartinit(void)
-{
-  // disable interrupts.
-  WriteReg(IER, 0x00);
+// void
+// uartinit(void)
+// {
+//   // disable interrupts.
+//   WriteReg(IER, 0x00);
 
-  // special mode to set baud rate.
-  WriteReg(LCR, LCR_BAUD_LATCH);
+//   // special mode to set baud rate.
+//   WriteReg(LCR, LCR_BAUD_LATCH);
 
-  // LSB for baud rate of 38.4K.
-  WriteReg(0, 0x03);
+//   // LSB for baud rate of 38.4K.
+//   WriteReg(0, 0x03);
 
-  // MSB for baud rate of 38.4K.
-  WriteReg(1, 0x00);
+//   // MSB for baud rate of 38.4K.
+//   WriteReg(1, 0x00);
 
-  // leave set-baud mode,
-  // and set word length to 8 bits, no parity.
-  WriteReg(LCR, LCR_EIGHT_BITS);
+//   // leave set-baud mode,
+//   // and set word length to 8 bits, no parity.
+//   WriteReg(LCR, LCR_EIGHT_BITS);
 
-  // reset and enable FIFOs.
-  WriteReg(FCR, FCR_FIFO_ENABLE | FCR_FIFO_CLEAR);
+//   // reset and enable FIFOs.
+//   WriteReg(FCR, FCR_FIFO_ENABLE | FCR_FIFO_CLEAR);
 
-  // enable transmit and receive interrupts.
-  WriteReg(IER, IER_TX_ENABLE | IER_RX_ENABLE);
+//   // enable transmit and receive interrupts.
+//   WriteReg(IER, IER_TX_ENABLE | IER_RX_ENABLE);
 
-  initlock(&uart_tx_lock, "uart");
-}
+//   initlock(&uart_tx_lock, "uart");
+// }
 
 // add a character to the output buffer and tell the
 // UART to start sending if it isn't already.

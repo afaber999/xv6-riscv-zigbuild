@@ -6,6 +6,11 @@
 #include "proc.h"
 #include "defs.h"
 
+
+// AF TEMP
+int zig_allocpid();
+//
+
 struct cpu cpus[NCPU];
 
 struct proc proc[NPROC];
@@ -19,6 +24,7 @@ extern void forkret(void);
 static void freeproc(struct proc *p);
 
 extern char trampoline[]; // trampoline.S
+
 
 // helps ensure that wakeups of wait()ing
 // parents are not lost. helps obey the
@@ -89,18 +95,18 @@ myproc(void)
   return p;
 }
 
-int
-allocpid()
-{
-  int pid;
+// int
+// allocpid()
+// {
+//   int pid;
   
-  acquire(&pid_lock);
-  pid = nextpid;
-  nextpid = nextpid + 1;
-  release(&pid_lock);
+//   acquire(&pid_lock);
+//   pid = nextpid;
+//   nextpid = nextpid + 1;
+//   release(&pid_lock);
 
-  return pid;
-}
+//   return pid;
+// }
 
 // Look in the process table for an UNUSED proc.
 // If found, initialize state required to run in the kernel,
@@ -122,7 +128,7 @@ allocproc(void)
   return 0;
 
 found:
-  p->pid = allocpid();
+  p->pid = zig_allocpid();
   p->state = USED;
 
   // Allocate a trapframe page.

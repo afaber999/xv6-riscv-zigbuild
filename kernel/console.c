@@ -139,6 +139,7 @@ consoleintr(int c)
 
   switch(c){
   case C('P'):  // Print process list.
+  case C('W'):  // AF USE TEMP ALSO  o.
     procdump();
     break;
   case C('U'):  // Kill line.
@@ -178,12 +179,17 @@ consoleintr(int c)
   release(&cons.lock);
 }
 
+
+// AF TEMP
+void zig_uartinit(void);
+//
+
 void
 consoleinit(void)
 {
   initlock(&cons.lock, "cons");
 
-  uartinit();
+  zig_uartinit();
 
   // connect read and write system calls
   // to consoleread and consolewrite.
