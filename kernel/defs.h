@@ -180,3 +180,23 @@ void            virtio_disk_intr(void);
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))
+
+
+// AF TEMP ZIG FUNCS
+void zig_start(void);
+void zig_uartinit();
+void zig_procinit(); 
+void zig_uartintr();
+void zig_uartputc(int c);
+void zig_uartputc_sync(int c);
+
+int zig_allocpid();
+
+void zig_consputc(int);
+int zig_consolewrite(int,uint64,int);
+int zig_consoleread(int,uint64,int);
+void zig_consoleintr(int);
+void zig_consoleinit(void);
+
+
+// AF END

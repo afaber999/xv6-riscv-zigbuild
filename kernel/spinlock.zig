@@ -31,4 +31,11 @@ pub const SpinLock = extern struct {
     pub fn holding(self: *SpinLock) bool {
         return c.holding(@ptrCast(&self.lock)) == 1;
     }
+    pub fn push_off() void  {
+        return c.push_off();
+    }
+    pub fn pop_off() void  {
+        return c.pop_off();
+    }
 };
+

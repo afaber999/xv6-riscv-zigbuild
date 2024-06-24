@@ -23,6 +23,7 @@ extern fn timervec(...) void;
 // entry.S needs one stack per CPU.
 export var stack0 align(16) = [_]u8{0} ** stack_size;
 
+
 /// entry jumps here in machine mode on stack0.
 pub export fn zig_start() void {    
     if (riscv.intr_get()) {
@@ -113,7 +114,7 @@ pub fn panic(
     _ = error_return_trace;
 
     for (msg) |ch| {
-        c.consputc(ch);
+        c.zig_consputc(ch);
 
     }
 
@@ -135,10 +136,27 @@ export fn zig_init_lock(lk: *c.struct_spinlock, name: [*c]u8) callconv(.C) u32 {
     return 1;
 }
 
-
+// TEMP WRAPPERS, TODO REMOVE WHEN POSSIBLE
 pub export fn zig_uartintr() callconv(.C) void {
-    c.uartintr();
+    //c.uartintr();
+    uart.uartIntr() catch unreachable;
 }    
+
+pub export fn zig_uartputc(ch : c_int) callconv(.C) void {
+    const a : i32 = @intCast(ch);
+    const b : u32 = @bitCast(a);
+    const b1 : u8 = @truncate(b);
+    return uart.putc(b1);
+    //return c.uartputc(ch);
+}
+
+pub export fn zig_uartputc_sync( ch:  c_int) callconv(.C) void {
+    const a : i32 = @intCast(ch);
+    const b : u32 = @bitCast(a);
+    const b1 : u8 = @truncate(b);
+    return uart.putcSync(b1);
+    //return c.uartputc_sync(ch);
+}
 
 pub export fn zig_uartinit() callconv(.C) void {
     uart.init();
@@ -152,5 +170,30 @@ pub export fn zig_procinit() callconv(.C) void {
 
 pub export fn zig_allocpid() callconv(.C)  c_int {
     return proc.allocpid();
-    //c.uartinit();
 } 
+
+
+// pub export fn zig_uartgetc() callconv(.C) void {
+//     return c.uartgetc();
+// }
+
+pub export fn zig_consputc(ch : c_int) callconv(.C)  void {
+    c.consputc(ch);
+}
+
+pub export fn zig_consolewrite(user_src : c_int, src : u64,  n:c_int) callconv(.C)  c_int {
+    return c.consolewrite(user_src, src, n);
+}
+
+pub export fn zig_consoleread(user_dst : c_int, dst : u64,  n:c_int) callconv(.C)  c_int {
+    return c.consoleread(user_dst, dst, n);
+}
+
+pub export fn zig_consoleintr(ch : c_int) callconv(.C)  void {
+    c.consoleintr(ch);
+}
+
+pub export fn zig_consoleinit() callconv(.C)  void {
+    c.consoleinit();
+}
+

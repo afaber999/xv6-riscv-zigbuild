@@ -25,6 +25,8 @@
 #define BACKSPACE 0x100
 #define C(x)  ((x)-'@')  // Control-x
 
+
+
 //
 // send one character to the uart.
 // called by printf(), and to echo input characters,
@@ -35,9 +37,9 @@ consputc(int c)
 {
   if(c == BACKSPACE){
     // if the user typed backspace, overwrite with a space.
-    uartputc_sync('\b'); uartputc_sync(' '); uartputc_sync('\b');
+    zig_uartputc_sync('\b'); zig_uartputc_sync(' '); zig_uartputc_sync('\b');
   } else {
-    uartputc_sync(c);
+    zig_uartputc_sync(c);
   }
 }
 
@@ -64,7 +66,7 @@ consolewrite(int user_src, uint64 src, int n)
     char c;
     if(either_copyin(&c, user_src, src+i, 1) == -1)
       break;
-    uartputc(c);
+    zig_uartputc(c);
   }
 
   return i;
@@ -179,11 +181,6 @@ consoleintr(int c)
   release(&cons.lock);
 }
 
-
-// AF TEMP
-void zig_uartinit(void);
-//
-
 void
 consoleinit(void)
 {
@@ -193,6 +190,6 @@ consoleinit(void)
 
   // connect read and write system calls
   // to consoleread and consolewrite.
-  devsw[CONSOLE].read = consoleread;
-  devsw[CONSOLE].write = consolewrite;
+  devsw[CONSOLE].read = zig_consoleread;
+  devsw[CONSOLE].write = zig_consolewrite;
 }

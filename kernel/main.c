@@ -6,16 +6,12 @@
 
 volatile static int started = 0;
 
-
-// AF TEMP
-extern void zig_procinit(void);
-
 // start() jumps here in supervisor mode on all CPUs.
 void
 kmain()
 {
   if(cpuid() == 0){
-    consoleinit();
+    zig_consoleinit();
     printfinit();
     printf("\n");
     printf("ZIG based xv6 kernel is booting\n");

@@ -6,11 +6,6 @@
 #include "proc.h"
 #include "defs.h"
 
-
-// AF TEMP
-int zig_allocpid();
-//
-
 struct cpu cpus[NCPU];
 
 struct proc proc[NPROC];
