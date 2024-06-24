@@ -3,8 +3,10 @@ const riscv = @import("riscv.zig");
 const memlayout = @import("memlayout.zig");
 const param = @import("param.zig");
 const spinlock = @import("spinlock.zig");
-const uart = @import("uart.zig");
-const proc = @import("proc.zig");
+
+// include funcs
+comptime { _ = @import("uart.zig"); }
+comptime { _ = @import("proc.zig"); }
 
 const c = @cImport({
     @cInclude("spinlock.h");
@@ -136,47 +138,10 @@ export fn zig_init_lock(lk: *c.struct_spinlock, name: [*c]u8) callconv(.C) u32 {
     return 1;
 }
 
+
+
+
 // TEMP WRAPPERS, TODO REMOVE WHEN POSSIBLE
-pub export fn zig_uartintr() callconv(.C) void {
-    //c.uartintr();
-    uart.uartIntr() catch unreachable;
-}    
-
-pub export fn zig_uartputc(ch : c_int) callconv(.C) void {
-    const a : i32 = @intCast(ch);
-    const b : u32 = @bitCast(a);
-    const b1 : u8 = @truncate(b);
-    return uart.putc(b1);
-    //return c.uartputc(ch);
-}
-
-pub export fn zig_uartputc_sync( ch:  c_int) callconv(.C) void {
-    const a : i32 = @intCast(ch);
-    const b : u32 = @bitCast(a);
-    const b1 : u8 = @truncate(b);
-    return uart.putcSync(b1);
-    //return c.uartputc_sync(ch);
-}
-
-pub export fn zig_uartinit() callconv(.C) void {
-    uart.init();
-    //c.uartinit();
-} 
-
-pub export fn zig_procinit() callconv(.C) void {
-    proc.init();
-    //c.uartinit();
-} 
-
-pub export fn zig_allocpid() callconv(.C)  c_int {
-    return proc.allocpid();
-} 
-
-
-// pub export fn zig_uartgetc() callconv(.C) void {
-//     return c.uartgetc();
-// }
-
 pub export fn zig_consputc(ch : c_int) callconv(.C)  void {
     c.consputc(ch);
 }
@@ -197,3 +162,7 @@ pub export fn zig_consoleinit() callconv(.C)  void {
     c.consoleinit();
 }
 
+// pub export fn zig_uartintr() void {
+//     //c.uartintr();
+//     uart.uartIntr() catch unreachable;
+// }  

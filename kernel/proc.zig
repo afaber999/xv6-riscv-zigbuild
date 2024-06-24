@@ -45,3 +45,14 @@ pub fn allocpid() i32
   return pid;
 }
 
+
+// TEMP WRAPPERS, TODO REMOVE WHEN POSSIBLE
+pub export fn zig_procinit() callconv(.C) void {
+    init();
+    //c.uartinit();
+} 
+
+pub export fn zig_allocpid() callconv(.C)  c_int {
+    return allocpid();
+} 
+

@@ -170,3 +170,37 @@ pub fn uartIntr() !void {
     start();
     tx_lock.release();
 }
+
+// TEMP WRAPPERS, TODO REMOVE WHEN POSSIBLE
+pub export fn zig_uartintr() void {
+    //c.uartintr();
+    uartIntr() catch unreachable;
+}    
+
+pub export fn zig_uartputc(ch : c_int) void {
+    const a : i32 = @intCast(ch);
+    const b : u32 = @bitCast(a);
+    const b1 : u8 = @truncate(b);
+    return putc(b1);
+    //return c.uartputc(ch);
+}
+
+pub export fn zig_uartputc_sync( ch:  c_int)void {
+    const a : i32 = @intCast(ch);
+    const b : u32 = @bitCast(a);
+    const b1 : u8 = @truncate(b);
+    return putcSync(b1);
+    //return c.uartputc_sync(ch);
+}
+
+pub export fn zig_uartinit() void {
+    init();
+    //c.uartinit();
+} 
+
+
+
+// pub export fn zig_uartgetc() callconv(.C) void {
+//     return c.uartgetc();
+// }
+
