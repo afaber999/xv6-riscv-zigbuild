@@ -1,11 +1,10 @@
 const std = @import("std");
+const riscv = @import("riscv.zig");
 
 const c = @cImport({
     @cInclude("c_funcs.h");
 });
 
-// first address after kernel.
-pub const end = @extern([*c]c_char, .{ .name = "end" });
 
 const Block = extern struct {
     next: ?*Block,
@@ -31,23 +30,30 @@ var do_log : bool = false;
 pub export fn kinit() void {
     lock.init("zig_kalloc");
 
-    kmem_start = @intFromPtr(end);
-    kmem_end = memlayout.PHYSTOP;
-    const kmem_size : usize = kmem_end - kmem_start;
-    const numPages : usize = (kmem_size / memlayout.PAGESIZE ) / 10000; 
+    // first address after kernel (not paged aligned!), see kernel.ld script
+    const end = @extern([*c]c_char, .{ .name = "end" });
 
-    pages = @as([*]Page, @ptrCast(end))[0..numPages];    
+    kmem_start = riscv.PGROUNDUP( @intFromPtr(end) ); // get next page lined address
+    kmem_end = memlayout.PHYSTOP; // max mem position
+    const kmem_size : usize = kmem_end - kmem_start;
+    const numPages : usize = (kmem_size / memlayout.PAGESIZE ); 
+
+    pages = @as([*]Page, @ptrFromInt(kmem_start))[0..numPages];    
 
     c.printf(@constCast( "ZIG PAGES INITIALIZED !!!! start: %p len %d\n"), pages.ptr, pages.len);
     //c.printf(@constCast( "\nEND : %p\n"), c.end);
+    c.printf(@constCast( "CEND : %p end : %p PHYSEND: %x\n"), c.end, end, kmem_end);
+    c.printf(@constCast( "PAGE 0 : %p\n"), &pages[0]);
     c.printf(@constCast( "PAGE 1 : %p\n"), &pages[1]);
     c.printf(@constCast( "LAST PAGE  : %p\n"), &pages[pages.len - 1]);
 
     for (pages) |*page| {
-        c.printf(@constCast( "PAGE PTR : %p\n"), page);
+        //c.printf(@constCast( "PAGE PTR : %p\n"), page);
         //kfree(page);
         freePage(page) catch unreachable;
     }
+    c.printf(@constCast( "FREELIST  : %p\n"), freelist);
+
 
     //@as(?*anyopaque, @ptrFromInt(@as(c_ulong, 2147483648) +% @as(c_ulong, @bitCast(@as(c_long, (@as(c_int, 128) * @as(c_int, 1024)) * @as(c_int, 10
 
