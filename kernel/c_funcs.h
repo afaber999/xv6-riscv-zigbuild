@@ -38,4 +38,13 @@ int consoleread(int user_dst, uint64 dst, int n);
 void consoleintr(int c);
 void consoleinit(void);
 
+void            printf(char*, ...);
+extern char end[];
+void c_kinit();
+void c_kfree(void *pa);
+void *c_kalloc(void);
+
+
+
+
 #endif

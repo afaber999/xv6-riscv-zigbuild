@@ -63,6 +63,7 @@ pub fn PLIC_SCLAIM(hart: usize) usize {
 // from physical address 0x80000000 to PHYSTOP.
 pub const KERNBASE = 0x80000000;
 pub const PHYSTOP = KERNBASE + 128 * 1024 * 1024;
+pub const PAGESIZE = riscv.PGSIZE;
 
 // map the trampoline page to the highest address,
 // in both user and kernel space.

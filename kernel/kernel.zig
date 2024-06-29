@@ -5,11 +5,13 @@ const param = @import("param.zig");
 const spinlock = @import("spinlock.zig");
 
 // include funcs
-comptime { _ = @import("uart.zig"); }
-comptime { _ = @import("proc.zig"); }
+comptime { _ = @import("Uart.zig"); }
+comptime { _ = @import("Proc.zig"); }
+comptime { _ = @import("Console.zig"); }
+comptime { _ = @import("Cpu.zig"); }
+comptime { _ = @import("kalloc.zig"); }
 
 const c = @cImport({
-    @cInclude("spinlock.h");
     @cInclude("c_funcs.h");
 });
 
@@ -129,40 +131,3 @@ pub fn panic(
     while (true) {}
 }
 
-export fn zig_init_lock(lk: *c.struct_spinlock, name: [*c]u8) callconv(.C) u32 {
-    lk.name = name;
-    lk.locked = 0;
-    lk.cpu = null;
-    var sl : spinlock.SpinLock = undefined;
-    sl.init("TESTIE");
-    return 1;
-}
-
-
-
-
-// TEMP WRAPPERS, TODO REMOVE WHEN POSSIBLE
-pub export fn zig_consputc(ch : c_int) callconv(.C)  void {
-    c.consputc(ch);
-}
-
-pub export fn zig_consolewrite(user_src : c_int, src : u64,  n:c_int) callconv(.C)  c_int {
-    return c.consolewrite(user_src, src, n);
-}
-
-pub export fn zig_consoleread(user_dst : c_int, dst : u64,  n:c_int) callconv(.C)  c_int {
-    return c.consoleread(user_dst, dst, n);
-}
-
-pub export fn zig_consoleintr(ch : c_int) callconv(.C)  void {
-    c.consoleintr(ch);
-}
-
-pub export fn zig_consoleinit() callconv(.C)  void {
-    c.consoleinit();
-}
-
-// pub export fn zig_uartintr() void {
-//     //c.uartintr();
-//     uart.uartIntr() catch unreachable;
-// }  

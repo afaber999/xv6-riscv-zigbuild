@@ -2,4 +2,7 @@
     "zig.formattingProvider": "off",
     "zig.zls.enableBuildOnSave": false,
     "editor.formatOnSave": false,
+    "files.associations": {
+        "virtio.h": "c"
+    },
 }

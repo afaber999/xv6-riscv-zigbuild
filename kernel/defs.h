@@ -198,5 +198,4 @@ int zig_consoleread(int,uint64,int);
 void zig_consoleintr(int);
 void zig_consoleinit(void);
 
-
 // AF END
