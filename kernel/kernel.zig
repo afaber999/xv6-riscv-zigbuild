@@ -11,6 +11,8 @@ comptime { _ = @import("Console.zig"); }
 comptime { _ = @import("Cpu.zig"); }
 comptime { _ = @import("kalloc.zig"); }
 
+const console = @import("Console.zig");
+
 const c = @cImport({
     @cInclude("c_funcs.h");
 });
@@ -118,7 +120,7 @@ pub fn panic(
     _ = error_return_trace;
 
     for (msg) |ch| {
-        c.zig_consputc(ch);
+        console.zig_consputc(ch);
 
     }
 

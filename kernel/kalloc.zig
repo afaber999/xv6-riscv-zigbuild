@@ -27,6 +27,29 @@ var kmem_end : usize = undefined;
 
 var do_log : bool = false;
 
+fn freelistLen() usize {
+    var p = freelist;
+    var cnt : usize = 0;
+    while (p != null) : (p = p.?.next) {
+        cnt += 1;
+    }
+    return cnt;
+}
+
+fn show_short() void {
+    c.printf(@constCast( "FL: "));
+    var p = freelist;
+
+    for (0..5) |_| {
+        if (p != null) {
+            c.printf(@constCast( " %p"), p);
+            p = p.?.next;
+        }
+    }
+    c.printf(@constCast( " FLL: %d\n"), freelistLen());
+}
+
+
 pub export fn kinit() void {
     lock.init("zig_kalloc");
 
@@ -35,34 +58,20 @@ pub export fn kinit() void {
 
     kmem_start = riscv.PGROUNDUP( @intFromPtr(end) ); // get next page lined address
     kmem_end = memlayout.PHYSTOP; // max mem position
+    //kmem_end = kmem_start + 4096 * 2000; //.PHYSTOP; // max mem position
+    
     const kmem_size : usize = kmem_end - kmem_start;
     const numPages : usize = (kmem_size / memlayout.PAGESIZE ); 
 
     pages = @as([*]Page, @ptrFromInt(kmem_start))[0..numPages];    
 
-    c.printf(@constCast( "ZIG PAGES INITIALIZED !!!! start: %p len %d\n"), pages.ptr, pages.len);
-    //c.printf(@constCast( "\nEND : %p\n"), c.end);
-    c.printf(@constCast( "CEND : %p end : %p PHYSEND: %x\n"), c.end, end, kmem_end);
-    c.printf(@constCast( "PAGE 0 : %p\n"), &pages[0]);
-    c.printf(@constCast( "PAGE 1 : %p\n"), &pages[1]);
-    c.printf(@constCast( "LAST PAGE  : %p\n"), &pages[pages.len - 1]);
+    c.printf(@constCast( "PAGES PTR: %p LEN:%d\n"), pages.ptr, pages.len);
 
     for (pages) |*page| {
-        //c.printf(@constCast( "PAGE PTR : %p\n"), page);
-        //kfree(page);
         freePage(page) catch unreachable;
     }
-    c.printf(@constCast( "FREELIST  : %p\n"), freelist);
-
-
-    //@as(?*anyopaque, @ptrFromInt(@as(c_ulong, 2147483648) +% @as(c_ulong, @bitCast(@as(c_long, (@as(c_int, 128) * @as(c_int, 1024)) * @as(c_int, 10
-
-    //freerange(@ptrCast( c.end), @ptrFromInt(memlayout.PHYSTOP));
-
-    c.printf(@constCast( "\nZIG KINIT!!!! %p\n"), c.end);
-    c.c_kinit();
-
-    do_log = true;
+    show_short();
+    do_log = false;
 }
 
 const MemPageErrors = error{
@@ -71,7 +80,7 @@ const MemPageErrors = error{
     AddressTooHigh,
 };
 
-pub fn freePage(page_address: *anyopaque) MemPageErrors!void {
+fn freePage(page_address: *anyopaque) MemPageErrors!void {
 
     const pa_u : usize = @intFromPtr(page_address);
 
@@ -96,39 +105,30 @@ pub fn freePage(page_address: *anyopaque) MemPageErrors!void {
 
 
 pub export fn kalloc() ?*anyopaque {
-
-
     lock.acquire();
     defer lock.release();
-    // const r_o = freelist;
-    // if (r_o) |r| {
-    //     freelist = r.next;
-    // }
-    // if (r_o) |r| {
-    //     const ptr: [*]u8 = @ptrCast(r);
-    //     @memset(ptr[0..memlayout.PAGESIZE], 5);
-    // } else {
-    //     // log.warn("out of memory", .{});
-    //     return null;
-    // }
-    // const ptr: [*]align(memlayout.PAGESIZE) u8 = @alignCast(@ptrCast(r_o.?));
-    // return ptr[0..memlayout.PAGESIZE];
 
-    const ptr = c.c_kalloc();
-    c.printf(@constCast( "ZIG ALLOC: %p\n"), ptr);
-    return ptr;
+    if (freelist) |new_page| {
+        freelist = new_page.next;
+
+        // Fill with junk to catch dangling refs.
+        @memset(std.mem.asBytes( new_page), 1);
+
+        if (do_log) {
+            c.printf(@constCast( "ZIG MY ALLOC: %p FLL: %d\n"), new_page, freelistLen());
+        }
+        return new_page;
+    } else {
+        @panic("KERNEL ERROR: OUT OF MEMORY");
+    }
 }
 
 pub export fn kfree(page_address: *anyopaque) void {
+    freePage(page_address) catch {
+        @panic("kfree error");
+    };
 
     if (do_log) {
-        c.printf(@constCast( "ZIG FREE: %p\n"), page_address);
+        c.printf(@constCast( "ZIG FREE: %p FLL: %d\n"), page_address,  freelistLen());
     }
-
-    // const ptr: [*]u8 = @ptrCast(page_address);
-    // freePage(@alignCast(ptr[0..memlayout.PAGESIZE])) catch {
-    //     @panic("kfree error");
-    // };
-
-    return c.c_kfree(page_address);
 }

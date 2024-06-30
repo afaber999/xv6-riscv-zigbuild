@@ -39,10 +39,6 @@ void consoleintr(int c);
 void consoleinit(void);
 
 void            printf(char*, ...);
-extern char end[];
-void c_kinit();
-void c_kfree(void *pa);
-void *c_kalloc(void);
 
 
 
