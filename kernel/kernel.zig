@@ -10,6 +10,7 @@ comptime { _ = @import("Proc.zig"); }
 comptime { _ = @import("Console.zig"); }
 comptime { _ = @import("Cpu.zig"); }
 comptime { _ = @import("kalloc.zig"); }
+comptime { _ = @import("bio.zig"); }
 
 const console = @import("Console.zig");
 

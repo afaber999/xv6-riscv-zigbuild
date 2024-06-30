@@ -34,7 +34,7 @@ struct {
 } bcache;
 
 void
-binit(void)
+c_binit(void)
 {
   struct buf *b;
 
@@ -90,7 +90,7 @@ bget(uint dev, uint blockno)
 
 // Return a locked buf with the contents of the indicated block.
 struct buf*
-bread(uint dev, uint blockno)
+c_bread(uint dev, uint blockno)
 {
   struct buf *b;
 
@@ -104,7 +104,7 @@ bread(uint dev, uint blockno)
 
 // Write b's contents to disk.  Must be locked.
 void
-bwrite(struct buf *b)
+c_bwrite(struct buf *b)
 {
   if(!holdingsleep(&b->lock))
     panic("bwrite");
@@ -114,7 +114,7 @@ bwrite(struct buf *b)
 // Release a locked buffer.
 // Move to the head of the most-recently-used list.
 void
-brelse(struct buf *b)
+c_brelse(struct buf *b)
 {
   if(!holdingsleep(&b->lock))
     panic("brelse");
@@ -137,14 +137,14 @@ brelse(struct buf *b)
 }
 
 void
-bpin(struct buf *b) {
+c_bpin(struct buf *b) {
   acquire(&bcache.lock);
   b->refcnt++;
   release(&bcache.lock);
 }
 
 void
-bunpin(struct buf *b) {
+c_bunpin(struct buf *b) {
   acquire(&bcache.lock);
   b->refcnt--;
   release(&bcache.lock);

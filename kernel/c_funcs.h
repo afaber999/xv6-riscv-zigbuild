@@ -41,6 +41,15 @@ void consoleinit(void);
 void            printf(char*, ...);
 
 
+struct buf;
+void            c_binit(void);
+struct buf*     c_bread(uint, uint);
+void            c_brelse(struct buf*);
+void            c_bwrite(struct buf*);
+void            c_bpin(struct buf*);
+void            c_bunpin(struct buf*);
+
+
 
 
 #endif
