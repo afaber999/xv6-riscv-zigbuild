@@ -183,6 +183,7 @@ pub fn build(b: *std.Build) !void {
         buildfs.addFileArg(u.getEmittedBin());
     }
     b.getInstallStep().dependOn(&b.addInstallFile(img, "fs.img").step);
+    buildfs.addFileArg(b.path("README"));
 
     const qemu = b.addSystemCommand(&[_][]const u8{
         "qemu-system-riscv64", "-machine", "virt","-bios","none",
