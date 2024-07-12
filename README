@@ -15,6 +15,9 @@ had to change the file system block size to 2048 (needs more investigation)
 had to change the linker script (user.ld) to change the alignment
 
 
+# emit header files
+zig build-lib -femit-h my_lib_source.zig, 
+
 
 
 

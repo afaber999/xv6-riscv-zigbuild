@@ -119,8 +119,9 @@ pub export fn kalloc() ?*anyopaque {
         }
         return new_page;
     } else {
-        @panic("KERNEL ERROR: OUT OF MEMORY");
+        //@panic("KERNEL ERROR: OUT OF MEMORY");
     }
+    return null;
 }
 
 pub export fn kfree(page_address: *anyopaque) void {

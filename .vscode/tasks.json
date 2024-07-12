@@ -5,10 +5,11 @@
     "tasks": [
         {
             "label": "zig build workspace",
+            "type": "process",
             "command": "${zig-language-extras.buildWorkspace}",
             
             //"command": "zig build",
-            "type": "shell",
+            //"type": "shell",
             // "args": [
             //     "run"
             // ],

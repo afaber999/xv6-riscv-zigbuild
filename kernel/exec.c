@@ -9,12 +9,16 @@
 
 static int loadseg(pde_t *, uint64, struct inode *, uint, uint);
 
+// CONVERT FROM ELF flags to RISCV page table flags!
 int flags2perm(int flags)
 {
     int perm = 0;
-    if(flags & 0x1)
+    // from ELF header: ELF_PROG_FLAG_EXEC
+    if(flags & ELF_PROG_FLAG_EXEC)
       perm = PTE_X;
-    if(flags & 0x2)
+
+    // from ELF header: ELF_PROG_FLAG_WRITE
+    if(flags & ELF_PROG_FLAG_WRITE)
       perm |= PTE_W;
     return perm;
 }
