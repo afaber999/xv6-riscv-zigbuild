@@ -50,6 +50,10 @@ void            c_bpin(struct buf*);
 void            c_bunpin(struct buf*);
 
 
+typedef uint64 pte_t;
+typedef uint64 *pagetable_t; // 512 PTEs
+pte_t *walk_c(pagetable_t pagetable, uint64 va, int alloc);
+uint64 walkaddr_c(pagetable_t pagetable, uint64 va);
 
 
 #endif

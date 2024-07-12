@@ -103,6 +103,20 @@ fn freePage(page_address: *anyopaque) MemPageErrors!void {
     freelist = b;
 }
 
+pub fn kalloc_page() []u8 {
+    lock.acquire();
+    defer lock.release();
+
+    if (freelist) |new_page| {
+        freelist = new_page.next;
+        const new_page_slice = @as([*]u8, @ptrCast(new_page))[0..riscv.PGSIZE];
+
+        // Fill with junk to catch dangling refs.
+        @memset(new_page_slice, 1);
+        return new_page_slice;
+    }
+    return &.{};
+}
 
 pub export fn kalloc() ?*anyopaque {
     lock.acquire();

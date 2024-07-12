@@ -83,8 +83,10 @@ kvminithart()
 //   12..20 -- 9 bits of level-0 index.
 //    0..11 -- 12 bits of byte offset within the page.
 pte_t *
-walk(pagetable_t pagetable, uint64 va, int alloc)
+walk_c(pagetable_t pagetable, uint64 va, int alloc)
 {
+  printf("WALK_C %p %x \n", pagetable, va);
+
   if(va >= MAXVA)
     panic("walk");
 
@@ -106,7 +108,7 @@ walk(pagetable_t pagetable, uint64 va, int alloc)
 // or 0 if not mapped.
 // Can only be used to look up user pages.
 uint64
-walkaddr(pagetable_t pagetable, uint64 va)
+walkaddr_c(pagetable_t pagetable, uint64 va)
 {
   pte_t *pte;
   uint64 pa;
@@ -140,7 +142,7 @@ kvmmap(pagetable_t kpgtbl, uint64 va, uint64 pa, uint64 sz, int perm)
 // be page-aligned. Returns 0 on success, -1 if walk() couldn't
 // allocate a needed page-table page.
 int
-mappages(pagetable_t pagetable, uint64 va, uint64 size, uint64 pa, int perm)
+mappages_c(pagetable_t pagetable, uint64 va, uint64 size, uint64 pa, int perm)
 {
   uint64 a, last;
   pte_t *pte;
@@ -194,7 +196,7 @@ uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, int do_free)
 // create an empty user page table.
 // returns 0 if out of memory.
 pagetable_t
-uvmcreate()
+c_uvmcreate()
 {
   pagetable_t pagetable;
   pagetable = (pagetable_t) kalloc();
@@ -208,7 +210,7 @@ uvmcreate()
 // for the very first process.
 // sz must be less than a page.
 void
-uvmfirst(pagetable_t pagetable, uchar *src, uint sz)
+c_uvmfirst(pagetable_t pagetable, uchar *src, uint sz)
 {
   char *mem;
 

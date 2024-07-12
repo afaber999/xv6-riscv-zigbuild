@@ -11,6 +11,8 @@ comptime { _ = @import("Console.zig"); }
 comptime { _ = @import("Cpu.zig"); }
 comptime { _ = @import("kalloc.zig"); }
 comptime { _ = @import("bio.zig"); }
+comptime { _ = @import("vm.zig"); }
+comptime { _ = @import("uvm.zig"); }
 
 const console = @import("Console.zig");
 
