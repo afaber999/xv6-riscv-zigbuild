@@ -108,7 +108,7 @@ pub const PageTable = struct {
             if (!pt_walk[idx].flags.valid) {
                 if (!alloc) return null;
                 // alloc page
-                const mem_ptr = kalloc.kalloc() orelse @panic("CaNT alloc");
+                const mem_ptr = kalloc.kalloc() orelse return null;
                 const memory = @as([*]u8, @ptrCast(mem_ptr))[0..PAGESIZE];
                 @memset(memory, 0);
 
@@ -471,19 +471,21 @@ pub export fn walkaddr( ptptr : c.pagetable_t, va : u64 ) u64  {
     var pt = PageTable.fromPtr(ptptr);
     const ret = pt.walkaddr(va) orelse null;
     return @intFromPtr( ret );
-    //return @ptrCast(c.walk_c(ptptr, va, alloc));
+    //return c.walkaddr_c(ptptr, va);
 }
 
 
 pub export fn mappages(ptptr : c.pagetable_t, va: usize, size: usize, pa: usize, perm : i32 ) i32 {
 
-    var pt = PageTable.fromPtr(ptptr);
-    var flags : PteFlags = .{};
-    if ( (perm & riscv.PTE_R) != 0) flags.readable = true;
-    if ( (perm & riscv.PTE_W) != 0) flags.writable = true;
-    if ( (perm & riscv.PTE_X) != 0) flags.executable = true;
-    if ( (perm & riscv.PTE_U) != 0 ) flags.user = true;
+    // var pt = PageTable.fromPtr(ptptr);
+    // var flags : PteFlags = .{};
+    // if ( (perm & riscv.PTE_R) != 0) flags.readable = true;
+    // if ( (perm & riscv.PTE_W) != 0) flags.writable = true;
+    // if ( (perm & riscv.PTE_X) != 0) flags.executable = true;
+    // if ( (perm & riscv.PTE_U) != 0 ) flags.user = true;
 
-    pt.mappages(va, size, pa, flags) catch return -1;
-    return 0;
+    // pt.mappages(va, size, pa, flags) catch return -1;
+    // return 0;
+
+    return c.mappages_c(ptptr, va, size, pa,perm);
 }

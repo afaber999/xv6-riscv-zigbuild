@@ -85,7 +85,7 @@ kvminithart()
 pte_t *
 walk_c(pagetable_t pagetable, uint64 va, int alloc)
 {
-  printf("WALK_C %p %x \n", pagetable, va);
+  //printf("WALK_C %p %x \n", pagetable, va);
 
   if(va >= MAXVA)
     panic("walk");
@@ -196,7 +196,7 @@ uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, int do_free)
 // create an empty user page table.
 // returns 0 if out of memory.
 pagetable_t
-c_uvmcreate()
+uvmcreate()
 {
   pagetable_t pagetable;
   pagetable = (pagetable_t) kalloc();
@@ -210,7 +210,7 @@ c_uvmcreate()
 // for the very first process.
 // sz must be less than a page.
 void
-c_uvmfirst(pagetable_t pagetable, uchar *src, uint sz)
+uvmfirst(pagetable_t pagetable, uchar *src, uint sz)
 {
   char *mem;
 

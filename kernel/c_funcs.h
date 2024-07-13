@@ -54,6 +54,7 @@ typedef uint64 pte_t;
 typedef uint64 *pagetable_t; // 512 PTEs
 pte_t *walk_c(pagetable_t pagetable, uint64 va, int alloc);
 uint64 walkaddr_c(pagetable_t pagetable, uint64 va);
+int mappages_c(pagetable_t pagetable, uint64 va, uint64 size, uint64 pa, int perm);
 
 
 #endif

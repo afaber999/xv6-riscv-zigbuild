@@ -213,13 +213,13 @@ test "uvmfirst" {
 }
 
 
-pub export fn uvmcreate() c.pagetable_t {
-    const r = zuvmcreate() orelse return null ;
-    return @ptrCast( &r.pages[0]);
-}
+// pub export fn uvmcreate() c.pagetable_t {
+//     const r = zuvmcreate() orelse return null ;
+//     return @ptrCast( &r.pages[0]);
+// }
 
-pub export fn uvmfirst(ptptr : c.pagetable_t, src : [*]u8, sz : u32) void {
-    const pt = vm.PageTable.fromPtr(ptptr);
-    const sl= src[0..sz];
-    zuvmfirst(pt, sl);
-} 
+// pub export fn uvmfirst(ptptr : c.pagetable_t, src : [*]u8, sz : u32) void {
+//     const pt = vm.PageTable.fromPtr(ptptr);
+//     const sl= src[0..sz];
+//     zuvmfirst(pt, sl);
+// } 
