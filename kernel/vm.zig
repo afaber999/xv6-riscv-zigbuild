@@ -477,15 +477,15 @@ pub export fn walkaddr( ptptr : c.pagetable_t, va : u64 ) u64  {
 
 pub export fn mappages(ptptr : c.pagetable_t, va: usize, size: usize, pa: usize, perm : i32 ) i32 {
 
-    // var pt = PageTable.fromPtr(ptptr);
-    // var flags : PteFlags = .{};
-    // if ( (perm & riscv.PTE_R) != 0) flags.readable = true;
-    // if ( (perm & riscv.PTE_W) != 0) flags.writable = true;
-    // if ( (perm & riscv.PTE_X) != 0) flags.executable = true;
-    // if ( (perm & riscv.PTE_U) != 0 ) flags.user = true;
+    var pt = PageTable.fromPtr(ptptr);
+    var flags : PteFlags = .{};
+    if ( (perm & riscv.PTE_R) != 0) flags.readable = true;
+    if ( (perm & riscv.PTE_W) != 0) flags.writable = true;
+    if ( (perm & riscv.PTE_X) != 0) flags.executable = true;
+    if ( (perm & riscv.PTE_U) != 0 ) flags.user = true;
 
-    // pt.mappages(va, size, pa, flags) catch return -1;
-    // return 0;
+    pt.mappages(va, size, pa, flags) catch return -1;
+    return 0;
 
-    return c.mappages_c(ptptr, va, size, pa,perm);
+    //return c.mappages_c(ptptr, va, size, pa,perm);
 }

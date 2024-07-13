@@ -196,7 +196,7 @@ uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, int do_free)
 // create an empty user page table.
 // returns 0 if out of memory.
 pagetable_t
-uvmcreate()
+c_uvmcreate()
 {
   pagetable_t pagetable;
   pagetable = (pagetable_t) kalloc();
@@ -210,7 +210,7 @@ uvmcreate()
 // for the very first process.
 // sz must be less than a page.
 void
-uvmfirst(pagetable_t pagetable, uchar *src, uint sz)
+c_uvmfirst(pagetable_t pagetable, uchar *src, uint sz)
 {
   char *mem;
 
@@ -337,7 +337,7 @@ uvmcopy(pagetable_t old, pagetable_t new, uint64 sz)
 // mark a PTE invalid for user access.
 // used by exec for the user stack guard page.
 void
-uvmclear(pagetable_t pagetable, uint64 va)
+c_uvmclear(pagetable_t pagetable, uint64 va)
 {
   pte_t *pte;
   

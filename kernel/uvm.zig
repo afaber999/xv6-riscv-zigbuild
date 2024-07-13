@@ -150,8 +150,8 @@ pub fn uvmcopy(pt_old: vm.PageTable, pt_new: vm.PageTable, sz: usize) KernelErro
 
 // mark a PTE invalid for user access.
 // used by exec for the user stack guard page.
-pub fn uvmclear(pagetable: vm.PageTable, va: usize) void {
-    const pte = pagetable.walk(va, 0) orelse @panic("uvmclear");
+pub fn zuvmclear(pagetable: vm.PageTable, va: usize) void {
+    const pte = pagetable.walk(va, false) orelse @panic("uvmclear");
     pte.flags.user = false;
 }
 
@@ -213,13 +213,19 @@ test "uvmfirst" {
 }
 
 
-// pub export fn uvmcreate() c.pagetable_t {
-//     const r = zuvmcreate() orelse return null ;
-//     return @ptrCast( &r.pages[0]);
-// }
+pub export fn uvmcreate() c.pagetable_t {
+    const r = zuvmcreate() orelse return null ;
+    return @ptrCast( &r.pages[0]);
+}
 
-// pub export fn uvmfirst(ptptr : c.pagetable_t, src : [*]u8, sz : u32) void {
-//     const pt = vm.PageTable.fromPtr(ptptr);
-//     const sl= src[0..sz];
-//     zuvmfirst(pt, sl);
-// } 
+pub export fn uvmfirst(ptptr : c.pagetable_t, src : [*]u8, sz : u32) void {
+    const pt = vm.PageTable.fromPtr(ptptr);
+    const sl= src[0..sz];
+    zuvmfirst(pt, sl);
+} 
+
+pub export fn uvmclear(ptptr : c.pagetable_t, va : u64) void {
+    const pt = vm.PageTable.fromPtr(ptptr);
+    zuvmclear(pt, va);    
+}
+
