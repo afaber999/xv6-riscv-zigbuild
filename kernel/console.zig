@@ -1,7 +1,7 @@
 const std = @import("std");
 const SpinLock = @import("spinlock.zig").SpinLock;
-const Proc = @import("Proc.zig");
-const Uart = @import("Uart.zig");
+const Proc = @import("proc.zig");
+const Uart = @import("uart.zig");
 
 const c = @cImport({
     @cInclude("c_funcs.h");

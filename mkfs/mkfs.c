@@ -153,6 +153,10 @@ main(int argc, char *argv[])
       if (new_str != NULL) {
         shortname = &new_str[1];
       } 
+      new_str = strrchr(fullname, '/');
+      if (new_str != NULL) {
+        shortname = &new_str[1];
+      } 
     }
     
     printf("SHORTNAME  :%s:\n", shortname);

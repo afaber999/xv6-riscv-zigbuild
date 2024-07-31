@@ -5,16 +5,16 @@ const param = @import("param.zig");
 const spinlock = @import("spinlock.zig");
 
 // include funcs
-comptime { _ = @import("Uart.zig"); }
-comptime { _ = @import("Proc.zig"); }
-comptime { _ = @import("Console.zig"); }
+comptime { _ = @import("uart.zig"); }
+comptime { _ = @import("proc.zig"); }
+comptime { _ = @import("console.zig"); }
 comptime { _ = @import("Cpu.zig"); }
 comptime { _ = @import("kalloc.zig"); }
 comptime { _ = @import("bio.zig"); }
 comptime { _ = @import("vm.zig"); }
 comptime { _ = @import("uvm.zig"); }
 
-const console = @import("Console.zig");
+const console = @import("console.zig");
 
 const c = @cImport({
     @cInclude("c_funcs.h");

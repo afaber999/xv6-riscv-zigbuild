@@ -3,9 +3,9 @@
 const std = @import("std");
 const riscv = @import("riscv.zig");
 const memlayout = @import("memlayout.zig");
-const param = @import("Param.zig");
+const param = @import("param.zig");
 const SpinLock = @import("spinlock.zig").SpinLock;
-const Uart = @import("Uart.zig");
+const Uart = @import("uart.zig");
 const Cpu = @import("Cpu.zig");
 
 const c = @cImport({
