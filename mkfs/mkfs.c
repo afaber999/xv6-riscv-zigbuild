@@ -146,6 +146,16 @@ main(int argc, char *argv[])
     char* new_str = strrchr(fullname, '_');
     if (new_str != NULL) {
       shortname = &new_str[1];
+    } else {
+      // INCLUDE NON EXEs which are not starting with a _, like the README file
+      char* new_str = strrchr(fullname, '\\');
+      if (new_str != NULL) {
+        shortname = &new_str[1];
+      } 
+      new_str = strrchr(fullname, '/');
+      if (new_str != NULL) {
+        shortname = &new_str[1];
+      }        
     } 
     
     printf("SHORTNAME  :%s:\n", shortname);

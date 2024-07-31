@@ -153,6 +153,7 @@ pub fn build(b: *std.Build) !void {
     while (userprogs.popOrNull()) |u| {
         buildfs.addFileArg(u.getEmittedBin());
     }
+    buildfs.addFileArg(b.path("README"));
     b.getInstallStep().dependOn(&b.addInstallFile(img, "fs.img").step);
 
     const qemu = b.addSystemCommand(&[_][]const u8{
