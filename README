@@ -1,10 +1,15 @@
+on linux
+sudo apt-get install build-essential
+sudo apt install qemu-utils qemu-system-x86 qemu-system-gui
+path to zig 013 
 
 
 got initial build.zig file from: https://github.com/pYtato-KK/xv6-riscv-zig/tree/riscv
-BUILD with ZIG 0.12.1
+BUILD with ZIG 0.13
 need path to ZIG compiler & QEMU
 
 zig build run
+
 
 
 to simplify, don't use perl script to generate, check in the usys.S file instead

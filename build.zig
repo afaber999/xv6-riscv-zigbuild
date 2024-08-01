@@ -1,20 +1,7 @@
 const std = @import("std");
 
 const userpath = "user";
-const cflags = &[_][]const u8{ 
-    "-Wall", 
-    "-Werror", 
-    "-Wno-gnu-designator", 
-    "-Wno-unused-variable", 
-    "-Wno-unused-but-set-variable", 
-    "-O3", 
-    "-I./", 
-    "-mno-relax", 
-    "-fno-pie", 
-    "-fno-stack-protector", 
-    "-fno-common", 
-    "-fno-omit-frame-pointer", 
-    "-mcmodel=medany" };
+const cflags = &[_][]const u8{ "-Wall", "-Werror", "-Wno-gnu-designator", "-Wno-unused-variable", "-Wno-unused-but-set-variable", "-O3", "-I./", "-mno-relax", "-fno-pie", "-fno-stack-protector", "-fno-common", "-fno-omit-frame-pointer", "-mcmodel=medany" };
 
 const ulibNames = [_][]const u8{
     "ulib.c", "umalloc.c", "printf.c", "usys.S",
@@ -157,12 +144,9 @@ pub fn build(b: *std.Build) !void {
     b.getInstallStep().dependOn(&b.addInstallFile(img, "fs.img").step);
 
     const qemu = b.addSystemCommand(&[_][]const u8{
-        "qemu-system-riscv64", "-machine", "virt","-bios","none",
-        "-m","128M",
-        "-smp","3",
-        "-nographic", 
-        "-global", "virtio-mmio.force-legacy=false", 
-        "-device", "virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0",
+        "qemu-system-riscv64", "-machine",                       "virt",    "-bios",                                            "none",
+        "-m",                  "128M",                           "-smp",    "3",                                                "-nographic",
+        "-global",             "virtio-mmio.force-legacy=false", "-device", "virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0",
     });
     qemu.addArg("-kernel");
     qemu.addFileArg(kernel.getEmittedBin());
