@@ -122,6 +122,7 @@ uartputc_sync(int c)
 
   if(panicked){
     for(;;)
+      WriteReg(THR, '?');
       ;
   }
 
@@ -169,9 +170,12 @@ uartstart()
 int
 uartgetc(void)
 {
+    uartputc_sync('@');  
   if(ReadReg(LSR) & 0x01){
     // input data is ready.
-    return ReadReg(RHR);
+    int c= ReadReg(RHR);
+    uartputc_sync(c);
+    return c;
   } else {
     return -1;
   }
