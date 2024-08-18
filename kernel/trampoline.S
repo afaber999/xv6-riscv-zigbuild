@@ -147,6 +147,8 @@ userret:
 	# restore user a0
         ld a0, 112(a0)
         
+        fence.i
+
         # return to user mode and user pc.
         # usertrapret() set up sstatus and sepc.
         sret
