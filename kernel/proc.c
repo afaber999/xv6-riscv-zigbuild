@@ -698,6 +698,7 @@ kdelay(unsigned long n)
   uint64 t0 = r_time();
 
   while(r_time() - t0 < n * INTERVAL){
-    asm volatile("pause");
+    asm volatile("nop");
+    // AF TODO asm volatile("pause");
   }
 }
