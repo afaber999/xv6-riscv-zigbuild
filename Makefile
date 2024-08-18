@@ -65,7 +65,7 @@ LD = $(TOOLPREFIX)ld
 OBJCOPY = $(TOOLPREFIX)objcopy
 OBJDUMP = $(TOOLPREFIX)objdump
 
-CFLAGS = -march=rv64gc_zihintpause -Wall -Werror -Os -fno-omit-frame-pointer -ggdb -gdwarf-2
+CFLAGS = -march=rv64gc -Wall -Werror -Os -fno-omit-frame-pointer -ggdb -gdwarf-2
 CFLAGS += -MD
 CFLAGS += -mcmodel=medany
 CFLAGS += -ffreestanding -fno-common -nostdlib -mno-relax
@@ -80,7 +80,8 @@ ifneq ($(shell $(CC) -dumpspecs 2>/dev/null | grep -e '[^f]nopie'),)
 CFLAGS += -fno-pie -nopie
 endif
 
-LDFLAGS = -z max-page-size=4096 -z noexecstack --no-warn-rwx-segments
+#LDFLAGS = -z max-page-size=4096 -z noexecstack --no-warn-rwx-segments
+LDFLAGS = -z max-page-size=4096 -z noexecstack 
 ASFLAGS = $(CFLAGS)
 
 $K/kernel: $(OBJS) $K/kernel.ld $U/initcode
@@ -165,7 +166,8 @@ clean:
 	mkfs/mkfs .gdbinit \
         $U/usys.S \
 	$(UPROGS)
-
+	rm -f duo-imgtools/milkv-duo_sdcard.img
+	
 # try to generate a unique GDB port
 GDBPORT = $(shell expr `id -u` % 5000 + 25000)
 # QEMU's gdb stub command line changed in 0.11
