@@ -17,3 +17,6 @@ kernel/kernel.ld
 kernel/kernel.bin
 user/usys.S
 .gdbinit
+duo-imgtools/milkv-duo_sdcard.img
+duo-imgtools/kernel.bin
+rm duo-imgtools/boot.sd 
