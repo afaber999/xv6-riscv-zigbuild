@@ -1,3 +1,9 @@
+install genimage
+
+for mkimage install
+sudo apt install u-boot-tools  
+
+
 # xv6 ports to real riscv platforms
 port xv6 to Sophgo CV1800B platforms such as Milkv Duo, Sophgo SG00X platforms
 such as Milkv-duo256, milkv Duo-S and T-HEAD TH1520 platforms such as Sipeed
@@ -13,6 +19,9 @@ some userspace tools to demo the peripherals usage. Check below.
 the built img will be duo-imgtools/milkv-duo_sdcard.img, then burn it
 to tf card on PC:
 dd if=milkv-duo_sdcard.img of=/dev/sdX  (take care "sdX" must be the
+
+sudo dd if=milkv-duo_sdcard.img of=/dev/mmcblk0 
+
 tfcard appeared on your PC, you have been warned!)
 
 *gpio demo:
